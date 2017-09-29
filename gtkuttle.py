@@ -207,12 +207,16 @@ class MainApplication():
             os.environ['SSH_ASKPASS'] = 'ssh-askpass'
 
         # Use setsid to force no terminal askpass
-        cmdline = "setsid sshuttle -r {0} {1} {2} --daemon --pidfile {3}".format(
+        cmdline = "setsid sshuttle -r {0} {1} {2} {3} --daemon --pidfile {4}".format(
             endpoint_data['address'],
             endpoint_data['subnet'],
+            endpoint_data['extra'],
             "--dns" if endpoint_data['use_dns'] else "",
             PID_FILE_PATH
         )
+
+        # Delete extra spaces in case if "Proxy DNS queries" or "Extra commandline arguments" options are not used
+        cmdline = ' '.join(cmdline.split())
 
         self.ind.set_icon('launching')
         if os.getuid():  # value true is > 0 so user is not root
